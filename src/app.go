@@ -7,13 +7,15 @@ import (
 )
 
 func main() {
-	testQueryAll()
+	testQuery()
+	// testQueryAll()
+	// testInsert()
 }
 
 func testInsert() {
 	todo := entity.Todo{
-		Title:       "a title",
-		Description: "no description",
+		Title:       "another title",
+		Description: "also no description",
 		Complete:    false,
 	}
 	db.Insert(todo)
@@ -21,6 +23,13 @@ func testInsert() {
 
 func testQueryAll() {
 	todos := db.SelectAll()
-
 	fmt.Print(todos)
+}
+
+func testQuery() {
+	todo := entity.Todo{
+		Title: "a title",
+	}
+	todo = db.Select(todo)
+	fmt.Print(todo)
 }
