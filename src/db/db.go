@@ -4,7 +4,6 @@ import (
 	"entity"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	"time"
 )
 
 const url = "mongodb://localhost:27017"
@@ -42,7 +41,6 @@ func Select(title string, todoChannel chan entity.Todo) {
 		panicErr(err)
 	}
 	execute(selectFunc)
-	time.Sleep(time.Second * 5) // test goroutine
 	todoChannel <- todo
 }
 
