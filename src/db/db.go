@@ -4,7 +4,7 @@ import (
 	"entity"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	// "time"
+	"time"
 )
 
 const url = "mongodb://localhost:27017"
@@ -35,13 +35,15 @@ func Insert(t entity.Todo) {
 }
 
 // Select one todo object
-func Select(query entity.Todo) (todo entity.Todo) {
+func Select(title string, todoChannel chan entity.Todo) {
+	var todo entity.Todo
 	selectFunc := func(c *mgo.Collection) {
-		err := c.Find(bson.M{"title": query.Title}).One(&todo)
+		err := c.Find(bson.M{"title": title}).One(&todo)
 		panicErr(err)
 	}
 	execute(selectFunc)
-	return todo
+	time.Sleep(time.Second * 5) // test goroutine
+	todoChannel <- todo
 }
 
 // SelectAll Todo objects
@@ -56,10 +58,18 @@ func SelectAll() (todos []entity.Todo) {
 
 // Update a Todo object
 func Update(t entity.Todo) {
-	query := bson.M{"ID": t.ID}
+	query := bson.M{"title": t.Title}
 	updateFunc := func(c *mgo.Collection) {
 		err := c.Update(query, t)
 		panicErr(err)
 	}
 	execute(updateFunc)
+}
+
+func Remove(title string) {
+	removeFunc := func(c *mgo.Collection) {
+		err := c.Remove(bson.M{"title": title})
+		panicErr(err)
+	}
+	execute(removeFunc)
 }
